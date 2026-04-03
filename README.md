@@ -19,19 +19,15 @@
 - ✅ iPad 适配
 
 ## 📷 截图
-Simulator Screenshot - iPhone 17 Pro Max - 2026-04-03 at 14.57.04.png
-Simulator Screenshot - iPhone 17 Pro Max - 2026-04-03 at 14.56.51.png
-Simulator Screenshot - iPhone 17 Pro Max - 2026-04-03 at 14.57.34.png
-Simulator Screenshot - iPhone 17 Pro Max - 2026-04-03 at 14.57.49.png
-Simulator Screenshot - iPhone 17 Pro Max - 2026-04-03 at 14.57.58.png
+
 
 | 首页 | 搜索 | 个人资料 |
 |------|------|----------|
-| ![首页](Screenshots/HomePage.png) | ![搜索](Screenshots/SearchPage.png) | ![个人资料](Screenshots/ProfilePage.png) |
+| ![首页](<img width="1320" height="2868" alt="Image" src="https://github.com/user-attachments/assets/b8ed6e4c-5bc3-4752-ab95-c4136180558d" />) | ![搜索](<img width="1320" height="2868" alt="Image" src="https://github.com/user-attachments/assets/d24c09d2-4934-465b-bce8-3d5eb51148e5" />) | ![个人资料](<img width="1320" height="2868" alt="Image" src="https://github.com/user-attachments/assets/10372c7a-2001-46d4-a8e4-9e71e2a9caf6" />) |
 
 | 登录页 | 深色模式 |
 |--------|----------|
-| ![登录](Screenshots/LoginPage.png) | ![深色模式](Screenshots/DarkMode.png) |
+| ![登录](<img width="1320" height="2868" alt="Image" src="https://github.com/user-attachments/assets/b335f928-542f-452a-969a-1afbde65cd65" />) | ![深色模式](<img width="1320" height="2868" alt="Image" src="https://github.com/user-attachments/assets/6112b34a-8fca-4136-86f1-944345dc3067" />) |
 
 ## 🛠 技术栈
 
