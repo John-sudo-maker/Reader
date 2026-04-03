@@ -1,0 +1,20 @@
+/* 
+  Localizable.strings
+  Reader
+
+  Created by John on 2026/4/2.
+  
+*/
+"login_title" = "登录";
+"login_button" = "登录";
+"logout_button" = "退出";
+"home_title" = "首页";
+"search_title" = "搜索";
+"profile_title" = "我的";
+"error_occurred" = "发生错误";
+"retry" = "重试";
+"username_placeholder" = "用户名";
+"password_placeholder" = "密码";
+"welcome_back" = "欢迎回来";
+"login_to_unlock" = "登录以解锁更多功能";
+"skip_and_browsing" = "跳过，继续浏览";
