@@ -25,6 +25,7 @@ class HomeViewController: UIViewController {
         setupUI()
         loadData()
         updateLoginState()
+        adjustForIPad()
         
         NotificationCenter.default.addObserver(
             self,
@@ -183,13 +184,18 @@ class HomeViewController: UIViewController {
     private func updateStackView() {
         contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
+        let isIPad = traitCollection.horizontalSizeClass == .regular
+        let cardMargin: CGFloat = isIPad ? 80 : 16
+        let cardHeight: CGFloat = isIPad ? 140 : 130
+        
         for article in articles {
             let cardView = ArticleCardView()
             cardView.configure(with: article)
             contentStackView.addArrangedSubview(cardView)
             
             cardView.snp.makeConstraints { make in
-                make.height.equalTo(130)
+                make.left.right.equalToSuperview().inset(cardMargin)
+                make.height.equalTo(cardHeight)
             }
         }
     }
@@ -265,9 +271,8 @@ class HomeViewController: UIViewController {
             }
         }
     }
-
+    
     private func loadMockDataAsFallback() {
-        // 使用模拟数据作为备用
         articles = [
             NewsArticle(
                 title: "SnapKit - 自动布局简化工具",
@@ -288,7 +293,7 @@ class HomeViewController: UIViewController {
         ]
         updateStackView()
     }
-
+    
     private func showEmptyState() {
         let emptyLabel = UILabel()
         emptyLabel.text = NSLocalizedString("home_empty_state", comment: "暂无数据\n下拉刷新重试")
@@ -301,6 +306,49 @@ class HomeViewController: UIViewController {
         emptyLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(100)
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.horizontalSizeClass != previousTraitCollection?.horizontalSizeClass {
+            adjustForIPad()
+        }
+    }
+    
+    private func adjustForIPad() {
+        let isIPad = traitCollection.horizontalSizeClass == .regular
+        let horizontalMargin: CGFloat = isIPad ? 60 : 20
+        
+        customImageView.snp.updateConstraints { make in
+            make.left.equalToSuperview().offset(horizontalMargin)
+            make.right.equalToSuperview().offset(-horizontalMargin)
+        }
+        
+        welcomeLabel.snp.updateConstraints { make in
+            make.left.equalToSuperview().offset(horizontalMargin)
+            make.right.equalToSuperview().offset(-horizontalMargin)
+        }
+        
+        loginPromptButton.snp.updateConstraints { make in
+            make.left.equalToSuperview().offset(horizontalMargin)
+            make.right.equalToSuperview().offset(-horizontalMargin)
+        }
+        
+        updateStackViewConstraints()
+    }
+    
+    private func updateStackViewConstraints() {
+        let isIPad = traitCollection.horizontalSizeClass == .regular
+        let cardMargin: CGFloat = isIPad ? 80 : 16
+        
+        for cardView in contentStackView.arrangedSubviews {
+            if let card = cardView as? ArticleCardView {
+                card.snp.remakeConstraints { make in
+                    make.left.right.equalToSuperview().inset(cardMargin)
+                    make.height.equalTo(isIPad ? 140 : 130)
+                }
+            }
         }
     }
 }

@@ -21,6 +21,7 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         updateUIForLoginState()
+        adjustForIPad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -197,4 +198,44 @@ class ProfileViewController: UIViewController {
         })
         present(alert, animated: true)
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+         super.traitCollectionDidChange(previousTraitCollection)
+         if traitCollection.horizontalSizeClass != previousTraitCollection?.horizontalSizeClass {
+             adjustForIPad()
+         }
+     }
+     
+     private func adjustForIPad() {
+         let isIPad = traitCollection.horizontalSizeClass == .regular
+         let horizontalMargin: CGFloat = isIPad ? 80 : 20
+         let cardWidth: CGFloat = isIPad ? 500 : UIScreen.main.bounds.width - 40
+         
+         cardView.snp.remakeConstraints { make in
+             make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+             make.centerX.equalToSuperview()
+             make.width.equalTo(cardWidth)
+             make.bottom.greaterThanOrEqualTo(view.safeAreaLayoutGuide).offset(-20)
+         }
+         
+         nameLabel.snp.updateConstraints { make in
+             make.left.right.equalToSuperview().inset(horizontalMargin)
+         }
+         
+         emailLabel.snp.updateConstraints { make in
+             make.left.right.equalToSuperview().inset(horizontalMargin)
+         }
+         
+         versionLabel.snp.updateConstraints { make in
+             make.left.right.equalToSuperview().inset(horizontalMargin)
+         }
+         
+         loginButton.snp.updateConstraints { make in
+             make.left.right.equalToSuperview().inset(horizontalMargin)
+         }
+         
+         logoutButton.snp.updateConstraints { make in
+             make.left.right.equalToSuperview().inset(horizontalMargin)
+         }
+     }
 }

@@ -30,6 +30,7 @@ class LoginViewController: UIViewController {
         setupUI()
         setupBiometryButton()
         setupKeyboardHandling()
+        adjustForIPad()
     }
     
     private func setupUI() {
@@ -256,5 +257,40 @@ class LoginViewController: UIViewController {
             style: .default
         ))
         present(alert, animated: true)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.horizontalSizeClass != previousTraitCollection?.horizontalSizeClass {
+            adjustForIPad()
+        }
+    }
+    
+    private func adjustForIPad() {
+        let isIPad = traitCollection.horizontalSizeClass == .regular
+        let horizontalMargin: CGFloat = isIPad ? 80 : 32
+        
+        usernameTextField.snp.updateConstraints { make in
+            make.left.equalToSuperview().offset(horizontalMargin)
+            make.right.equalToSuperview().offset(-horizontalMargin)
+        }
+        
+        passwordTextField.snp.updateConstraints { make in
+            make.left.equalToSuperview().offset(horizontalMargin)
+            make.right.equalToSuperview().offset(-horizontalMargin)
+        }
+        
+        loginButton.snp.updateConstraints { make in
+            make.left.equalToSuperview().offset(horizontalMargin)
+            make.right.equalToSuperview().offset(-horizontalMargin)
+        }
+        
+        if isIPad {
+            contentView.snp.remakeConstraints { make in
+                make.edges.equalToSuperview()
+                make.width.equalToSuperview()
+                make.centerX.equalToSuperview()
+            }
+        }
     }
 }

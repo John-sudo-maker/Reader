@@ -22,7 +22,8 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupSearchBar()
-        
+        adjustForIPad()
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleCardTap),
@@ -178,13 +179,16 @@ class SearchViewController: UIViewController {
     private func updateStackView() {
         contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
+        let isIPad = traitCollection.horizontalSizeClass == .regular
+        let cardMargin: CGFloat = isIPad ? 80 : 16
+        
         for article in results {
             let cardView = ArticleCardView()
             cardView.configure(with: article)
             contentStackView.addArrangedSubview(cardView)
             
             cardView.snp.makeConstraints { make in
-                make.left.right.equalToSuperview().inset(16)
+                make.left.right.equalToSuperview().inset(cardMargin)
             }
         }
     }
@@ -215,6 +219,30 @@ class SearchViewController: UIViewController {
             }
         }
         present(loginVC, animated: true)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.horizontalSizeClass != previousTraitCollection?.horizontalSizeClass {
+            adjustForIPad()
+        }
+    }
+    
+    private func adjustForIPad() {
+        let isIPad = traitCollection.horizontalSizeClass == .regular
+        let cardMargin: CGFloat = isIPad ? 80 : 16
+        
+        for cardView in contentStackView.arrangedSubviews {
+            if let card = cardView as? ArticleCardView {
+                card.snp.updateConstraints { make in
+                    make.left.right.equalToSuperview().inset(cardMargin)
+                }
+            }
+        }
+        
+        emptyStateLabel.snp.updateConstraints { make in
+            make.left.right.equalToSuperview().inset(isIPad ? 80 : 32)
+        }
     }
 }
 

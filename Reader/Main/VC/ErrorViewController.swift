@@ -41,7 +41,6 @@ class ErrorViewController: UIViewController {
         errorLabel.textColor = .secondaryLabel
         errorLabel.font = UIFont.systemFont(ofSize: 16)
         
-        // 使用本地化字符串
         retryButton.setTitle(NSLocalizedString("error_retry_button", comment: "重试按钮"), for: .normal)
         retryButton.backgroundColor = .systemBlue
         retryButton.setTitleColor(.white, for: .normal)
@@ -81,22 +80,36 @@ class ErrorViewController: UIViewController {
     }
     
     private func adjustForIPad() {
-        // iPad 布局调整
-        let multiplier: CGFloat = traitCollection.horizontalSizeClass == .regular ? 0.6 : 0.8
+        let isIPad = traitCollection.horizontalSizeClass == .regular
         
-        retryButton.snp.updateConstraints { make in
-            make.width.equalTo(120 * (1 / multiplier))
-        }
-        
-        imageView.snp.updateConstraints { make in
-            make.width.height.equalTo(80 * (1 / multiplier))
+        if isIPad {
+            retryButton.snp.updateConstraints { make in
+                make.width.equalTo(160)
+                make.height.equalTo(50)
+            }
+            
+            imageView.snp.updateConstraints { make in
+                make.width.height.equalTo(100)
+            }
+            
+            errorLabel.font = UIFont.systemFont(ofSize: 18)
+        } else {
+            retryButton.snp.updateConstraints { make in
+                make.width.equalTo(120)
+                make.height.equalTo(44)
+            }
+            
+            imageView.snp.updateConstraints { make in
+                make.width.height.equalTo(80)
+            }
+            
+            errorLabel.font = UIFont.systemFont(ofSize: 16)
         }
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if traitCollection.horizontalSizeClass == .regular {
-            // iPad 布局调整
             adjustForIPad()
         }
     }
