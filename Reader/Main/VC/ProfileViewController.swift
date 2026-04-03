@@ -38,13 +38,13 @@ class ProfileViewController: UIViewController {
         
         if isLoggedIn {
             nameLabel.text = savedUsername
-            emailLabel.text = "\(savedUsername)@example.com"
+            emailLabel.text = String(format: NSLocalizedString("profile_email_suffix", comment: "邮箱后缀"), savedUsername)
             loginButton.isHidden = true
             logoutButton.isHidden = false
             avatarImageView.tintColor = .systemBlue
         } else {
-            nameLabel.text = "未登录"
-            emailLabel.text = "登录以体验完整功能"
+            nameLabel.text = NSLocalizedString("profile_logged_out", comment: "未登录")
+            emailLabel.text = NSLocalizedString("profile_logged_out_subtitle", comment: "登录以体验完整功能")
             loginButton.isHidden = false
             logoutButton.isHidden = true
             avatarImageView.tintColor = .systemGray
@@ -53,7 +53,7 @@ class ProfileViewController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = .systemBackground
-        title = "个人资料"
+        title = NSLocalizedString("profile_title", comment: "个人资料")
         navigationController?.navigationBar.prefersLargeTitles = true
         
         // Card View
@@ -79,13 +79,14 @@ class ProfileViewController: UIViewController {
         emailLabel.textColor = .secondaryLabel
         emailLabel.textAlignment = .center
         
-        versionLabel.text = "版本: 1.0.0"
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        versionLabel.text = String(format: NSLocalizedString("profile_version", comment: "版本"), version)
         versionLabel.font = UIFont.systemFont(ofSize: 14)
         versionLabel.textColor = .secondaryLabel
         versionLabel.textAlignment = .center
         
         // Login Button
-        loginButton.setTitle("立即登录", for: .normal)
+        loginButton.setTitle(NSLocalizedString("profile_login_button", comment: "立即登录"), for: .normal)
         loginButton.backgroundColor = .systemBlue
         loginButton.setTitleColor(.white, for: .normal)
         loginButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
@@ -93,7 +94,7 @@ class ProfileViewController: UIViewController {
         loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         
         // Logout Button
-        logoutButton.setTitle("退出登录", for: .normal)
+        logoutButton.setTitle(NSLocalizedString("profile_logout_button", comment: "退出登录"), for: .normal)
         logoutButton.backgroundColor = .systemRed
         logoutButton.setTitleColor(.white, for: .normal)
         logoutButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
@@ -159,21 +160,41 @@ class ProfileViewController: UIViewController {
         loginVC.modalPresentationStyle = .fullScreen
         loginVC.onLoginSuccess = { [weak self] in
             self?.updateUIForLoginState()
-            // 通知首页也更新状态
             NotificationCenter.default.post(name: NSNotification.Name("LoginStateChanged"), object: nil)
         }
         present(loginVC, animated: true)
     }
     
     @objc private func logoutTapped() {
-        AuthenticationService().logout()
-        updateUIForLoginState()
-        
-        // 发送通知，让首页也更新
-        NotificationCenter.default.post(name: NSNotification.Name("LoginStateChanged"), object: nil)
-        
-        let alert = UIAlertController(title: "已退出", message: "您已成功退出登录", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "确定", style: .default))
+        let alert = UIAlertController(
+            title: NSLocalizedString("logout_confirm_title", comment: "确认退出"),
+            message: NSLocalizedString("logout_confirm_message", comment: "确定要退出登录吗？"),
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("cancel", comment: "取消"),
+            style: .cancel
+        ))
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("ok", comment: "确定"),
+            style: .destructive
+        ) { [weak self] _ in
+            AuthenticationService().logout()
+            self?.updateUIForLoginState()
+            
+            NotificationCenter.default.post(name: NSNotification.Name("LoginStateChanged"), object: nil)
+            
+            let successAlert = UIAlertController(
+                title: NSLocalizedString("logout_success_title", comment: "已退出"),
+                message: NSLocalizedString("logout_success_message", comment: "您已成功退出登录"),
+                preferredStyle: .alert
+            )
+            successAlert.addAction(UIAlertAction(
+                title: NSLocalizedString("ok", comment: "确定"),
+                style: .default
+            ))
+            self?.present(successAlert, animated: true)
+        })
         present(alert, animated: true)
     }
 }

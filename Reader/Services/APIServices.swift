@@ -9,7 +9,7 @@ import Foundation
 
 class APIService: APIServiceProtocol {
     private let baseURL = "https://api.github.com"
-    private let useMockData = false  // 改为 false 使用真实 API
+    private let useMockData = false
     
     func fetchNews() async throws -> [NewsArticle] {
         if useMockData {
@@ -35,7 +35,7 @@ class APIService: APIServiceProtocol {
                 
                 if httpResponse.statusCode == 403 {
                     print("API 速率限制达到，使用 Mock 数据")
-                    return getMockArticles()  // 降级到 Mock 数据
+                    return getMockArticles()
                 }
                 
                 guard httpResponse.statusCode == 200 else {
@@ -48,7 +48,6 @@ class APIService: APIServiceProtocol {
             
         } catch {
             print("请求失败: \(error.localizedDescription)")
-            // 网络错误时返回 Mock 数据
             return getMockArticles()
         }
     }
@@ -141,7 +140,6 @@ class APIService: APIServiceProtocol {
     }
 }
 
-// API 错误类型
 enum APIError: LocalizedError {
     case invalidURL
     case httpError(Int)
@@ -162,7 +160,6 @@ enum APIError: LocalizedError {
     }
 }
 
-// GitHubRepo 模型 - 同时支持普通仓库和搜索 API 返回的仓库
 struct GitHubRepo: Codable {
     let id: Int
     let name: String

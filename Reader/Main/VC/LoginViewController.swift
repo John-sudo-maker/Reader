@@ -11,7 +11,7 @@ import LocalAuthentication
 
 class LoginViewController: UIViewController {
     private let authService = AuthenticationService()
-    var onLoginSuccess: (() -> Void)?  // 添加登录成功回调
+    var onLoginSuccess: (() -> Void)?
     
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -23,7 +23,7 @@ class LoginViewController: UIViewController {
     private let loginButton = UIButton(type: .system)
     private let biometryButton = UIButton(type: .system)
     private let skipButton = UIButton(type: .system)
-    private let closeButton = UIButton(type: .system)  // 添加关闭按钮
+    private let closeButton = UIButton(type: .system)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +35,6 @@ class LoginViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .systemBackground
         
-        // 添加关闭按钮（模态弹出时需要）
         closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
         closeButton.tintColor = .secondaryLabel
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
@@ -43,17 +42,16 @@ class LoginViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         
-        // Title
-        titleLabel.text = NSLocalizedString("login_title", comment: "")
+        titleLabel.text = NSLocalizedString("login_title", comment: "登录标题")
         titleLabel.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         titleLabel.textColor = .label
         
-        subtitleLabel.text = NSLocalizedString("login_to_unlock", comment: "")
+        subtitleLabel.text = NSLocalizedString("login_subtitle", comment: "登录副标题")
         subtitleLabel.font = UIFont.systemFont(ofSize: 16)
         subtitleLabel.textColor = .secondaryLabel
         
         // Username field
-        usernameTextField.placeholder = NSLocalizedString("username_placeholder", comment: "")
+        usernameTextField.placeholder = NSLocalizedString("username_placeholder", comment: "用户名占位符")
         usernameTextField.borderStyle = .roundedRect
         usernameTextField.autocapitalizationType = .none
         usernameTextField.autocorrectionType = .no
@@ -62,7 +60,7 @@ class LoginViewController: UIViewController {
         usernameTextField.font = UIFont.systemFont(ofSize: 16)
         
         // Password field
-        passwordTextField.placeholder = NSLocalizedString("password_placeholder", comment: "")
+        passwordTextField.placeholder = NSLocalizedString("password_placeholder", comment: "密码占位符")
         passwordTextField.borderStyle = .roundedRect
         passwordTextField.isSecureTextEntry = true
         passwordTextField.backgroundColor = .systemGray6
@@ -70,7 +68,7 @@ class LoginViewController: UIViewController {
         passwordTextField.font = UIFont.systemFont(ofSize: 16)
         
         // Login button
-        loginButton.setTitle(NSLocalizedString("login_button", comment: ""), for: .normal)
+        loginButton.setTitle(NSLocalizedString("login_button", comment: "登录按钮"), for: .normal)
         loginButton.backgroundColor = .systemBlue
         loginButton.setTitleColor(.white, for: .normal)
         loginButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
@@ -78,7 +76,7 @@ class LoginViewController: UIViewController {
         loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         
         // Skip button
-        skipButton.setTitle(NSLocalizedString("skip_and_browsing", comment: ""), for: .normal)
+        skipButton.setTitle(NSLocalizedString("skip_button", comment: "跳过按钮"), for: .normal)
         skipButton.setTitleColor(.systemBlue, for: .normal)
         skipButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         skipButton.addTarget(self, action: #selector(skipTapped), for: .touchUpInside)
@@ -152,7 +150,10 @@ class LoginViewController: UIViewController {
         let biometryType = authService.getBiometryType()
         guard biometryType != .none else { return }
         
-        let buttonTitle = biometryType == .faceID ? "使用 Face ID 登录" : "使用 Touch ID 登录"
+        let buttonTitle = biometryType == .faceID ?
+            NSLocalizedString("face_id_login", comment: "Face ID登录") :
+            NSLocalizedString("touch_id_login", comment: "Touch ID登录")
+        
         biometryButton.setTitle(buttonTitle, for: .normal)
         biometryButton.setImage(UIImage(systemName: biometryType == .faceID ? "faceid" : "touchid"), for: .normal)
         biometryButton.tintColor = .systemBlue
@@ -202,7 +203,6 @@ class LoginViewController: UIViewController {
                 )
                 if success {
                     await MainActor.run {
-                        // 调用登录成功回调
                         onLoginSuccess?()
                         dismiss(animated: true)
                     }
@@ -239,8 +239,22 @@ class LoginViewController: UIViewController {
     }
     
     private func showError(_ error: Error) {
-        let alert = UIAlertController(title: "错误", message: error.localizedDescription, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "确定", style: .default))
+        let errorMessage: String
+        if let authError = error as? AuthError {
+            errorMessage = authError.localizedDescription
+        } else {
+            errorMessage = error.localizedDescription
+        }
+        
+        let alert = UIAlertController(
+            title: NSLocalizedString("error", comment: "错误"),
+            message: errorMessage,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("ok", comment: "确定"),
+            style: .default
+        ))
         present(alert, animated: true)
     }
 }

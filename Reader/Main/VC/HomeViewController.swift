@@ -14,7 +14,7 @@ class HomeViewController: UIViewController {
     
     private let customImageView = CustomImageView()
     private let welcomeLabel = UILabel()
-    private let loginPromptButton = UIButton(type: .system)  // 添加一个明显的登录按钮
+    private let loginPromptButton = UIButton(type: .system)
     private let scrollView = UIScrollView()
     private let contentStackView = UIStackView()
     private let loadingIndicator = UIActivityIndicatorView(style: .large)
@@ -26,7 +26,6 @@ class HomeViewController: UIViewController {
         loadData()
         updateLoginState()
         
-        // 监听登录状态变化
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(updateLoginState),
@@ -45,66 +44,64 @@ class HomeViewController: UIViewController {
         let savedUsername = UserDefaults.standard.string(forKey: "savedUsername") ?? ""
         
         if isLoggedIn && !savedUsername.isEmpty {
-            // 已登录状态
-            welcomeLabel.text = "欢迎回来，\(savedUsername)！"
+            welcomeLabel.text = String(format: NSLocalizedString("home_welcome_logged_in", comment: "欢迎回来，用户名"), savedUsername)
             welcomeLabel.textColor = .label
             loginPromptButton.isHidden = true
             
-            // 设置导航栏右侧按钮为退出
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "退出", style: .plain, target: self, action: #selector(logout))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                title: NSLocalizedString("logout_button", comment: "退出"),
+                style: .plain,
+                target: self,
+                action: #selector(logout)
+            )
         } else {
-            // 未登录状态
-            welcomeLabel.text = "发现精彩开源项目"
+            welcomeLabel.text = NSLocalizedString("home_welcome_logged_out", comment: "发现精彩开源项目")
             welcomeLabel.textColor = .label
             loginPromptButton.isHidden = false
             
-            // 设置导航栏右侧按钮为登录
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "登录", style: .plain, target: self, action: #selector(showLogin))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                title: NSLocalizedString("login_button", comment: "登录"),
+                style: .plain,
+                target: self,
+                action: #selector(showLogin)
+            )
         }
         
-        // 强制刷新导航栏
         navigationController?.navigationBar.setNeedsLayout()
     }
     
     private func setupUI() {
         view.backgroundColor = .systemBackground
-        title = "热门仓库"
+        title = NSLocalizedString("home_title", comment: "热门仓库")
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        // 确保导航栏按钮显示
         navigationController?.navigationBar.tintColor = .systemBlue
         
-        // Custom image widget
         if let url = URL(string: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png") {
             customImageView.loadImage(from: url)
         }
         
-        // Welcome label
         welcomeLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium)
         welcomeLabel.textAlignment = .center
         welcomeLabel.numberOfLines = 0
         
-        // 登录提示按钮 - 这是一个明显的按钮，放在欢迎语下方
-        loginPromptButton.setTitle("🔐 点击登录，解锁更多功能", for: .normal)
+        loginPromptButton.setTitle(NSLocalizedString("home_login_prompt", comment: "点击登录，解锁更多功能"), for: .normal)
         loginPromptButton.setTitleColor(.systemBlue, for: .normal)
         loginPromptButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         loginPromptButton.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
         loginPromptButton.layer.cornerRadius = 12
         loginPromptButton.addTarget(self, action: #selector(showLogin), for: .touchUpInside)
-        loginPromptButton.isHidden = true  // 初始隐藏，在 updateLoginState 中控制
+        loginPromptButton.isHidden = true
         
-        // ScrollView
         scrollView.showsVerticalScrollIndicator = false
         scrollView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         
-        // Content StackView
         contentStackView.axis = .vertical
         contentStackView.spacing = 16
         contentStackView.alignment = .fill
         contentStackView.distribution = .equalSpacing
         
-        // Loading indicator
         loadingIndicator.hidesWhenStopped = true
         
         view.addSubview(customImageView)
@@ -164,7 +161,6 @@ class HomeViewController: UIViewController {
                     updateStackView()
                     
                     if articles.isEmpty {
-                        // 显示空状态
                         showEmptyState()
                     }
                 }
@@ -173,9 +169,7 @@ class HomeViewController: UIViewController {
                     loadingIndicator.stopAnimating()
                     refreshControl.endRefreshing()
                     
-                    // 显示友好错误提示，而不是全屏错误页
                     showNetworkErrorToast(error)
-                    // 使用 Mock 数据作为备用
                     loadMockDataAsFallback()
                 }
             }
@@ -187,19 +181,15 @@ class HomeViewController: UIViewController {
     }
     
     private func updateStackView() {
-        // 清除旧的视图
         contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
-        // 添加新的卡片
         for article in articles {
             let cardView = ArticleCardView()
             cardView.configure(with: article)
             contentStackView.addArrangedSubview(cardView)
             
-            // 修改这里：不要设置 left.right 约束，让 StackView 自动管理
-            // 只需要设置固定高度即可
             cardView.snp.makeConstraints { make in
-                make.height.equalTo(130)  // 设置固定高度
+                make.height.equalTo(130)
             }
         }
     }
@@ -209,28 +199,46 @@ class HomeViewController: UIViewController {
         loginVC.modalPresentationStyle = .fullScreen
         loginVC.onLoginSuccess = { [weak self] in
             self?.updateLoginState()
-            // 刷新数据（可选）
-            // self?.loadData()
         }
         present(loginVC, animated: true)
     }
     
     @objc private func logout() {
-        let alert = UIAlertController(title: "确认退出", message: "确定要退出登录吗？", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "取消", style: .cancel))
-        alert.addAction(UIAlertAction(title: "确定", style: .destructive) { [weak self] _ in
+        let alert = UIAlertController(
+            title: NSLocalizedString("logout_confirm_title", comment: "确认退出"),
+            message: NSLocalizedString("logout_confirm_message", comment: "确定要退出登录吗？"),
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("cancel", comment: "取消"),
+            style: .cancel
+        ))
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("ok", comment: "确定"),
+            style: .destructive
+        ) { [weak self] _ in
             AuthenticationService().logout()
             self?.updateLoginState()
             
-            // 发送通知，让其他页面也更新
             NotificationCenter.default.post(name: NSNotification.Name("LoginStateChanged"), object: nil)
+            
+            let successAlert = UIAlertController(
+                title: NSLocalizedString("logout_success_title", comment: "已退出"),
+                message: NSLocalizedString("logout_success_message", comment: "您已成功退出登录"),
+                preferredStyle: .alert
+            )
+            successAlert.addAction(UIAlertAction(
+                title: NSLocalizedString("ok", comment: "确定"),
+                style: .default
+            ))
+            self?.present(successAlert, animated: true)
         })
         present(alert, animated: true)
     }
     
     private func showNetworkErrorToast(_ error: Error) {
         let toast = UILabel()
-        toast.text = "网络请求失败，使用示例数据"
+        toast.text = NSLocalizedString("home_network_error", comment: "网络请求失败，使用示例数据")
         toast.backgroundColor = UIColor.black.withAlphaComponent(0.7)
         toast.textColor = .white
         toast.textAlignment = .center
@@ -283,7 +291,7 @@ class HomeViewController: UIViewController {
 
     private func showEmptyState() {
         let emptyLabel = UILabel()
-        emptyLabel.text = "暂无数据\n下拉刷新重试"
+        emptyLabel.text = NSLocalizedString("home_empty_state", comment: "暂无数据\n下拉刷新重试")
         emptyLabel.numberOfLines = 0
         emptyLabel.textAlignment = .center
         emptyLabel.textColor = .secondaryLabel

@@ -31,7 +31,7 @@ class ArticleCardView: UIView {
     }
     
     private func setupUI() {
-        // 卡片样式
+        // card
         containerView.backgroundColor = .systemBackground
         containerView.layer.cornerRadius = 12
         containerView.layer.shadowColor = UIColor.black.cgColor
@@ -83,7 +83,6 @@ class ArticleCardView: UIView {
         
         setupConstraints()
         
-        // 添加点击手势
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cardTapped))
         containerView.addGestureRecognizer(tapGesture)
         containerView.isUserInteractionEnabled = true
@@ -109,7 +108,7 @@ class ArticleCardView: UIView {
         authorLabel.snp.makeConstraints { make in
             make.top.equalTo(descriptionLabel.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(16)
-            make.bottom.equalToSuperview().offset(-12)  // 添加底部约束
+            make.bottom.equalToSuperview().offset(-12)
         }
         
         languageLabel.snp.makeConstraints { make in
@@ -130,12 +129,10 @@ class ArticleCardView: UIView {
             make.right.equalToSuperview().offset(-16)
         }
         
-        // 移除 separatorLine 的底部约束，因为已经有了 authorLabel 的底部约束
         separatorLine.snp.makeConstraints { make in
             make.top.equalTo(authorLabel.snp.bottom).offset(8)
             make.left.right.equalToSuperview()
             make.height.equalTo(0.5)
-            // 不要设置 bottom 约束
         }
     }
     

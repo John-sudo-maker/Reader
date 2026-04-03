@@ -5,16 +5,81 @@
   Created by John on 2026/4/2.
   
 */
-"login_title" = "登录";
+// MARK: - Common
+"app_name" = "新闻阅读器";
+"ok" = "确定";
+"cancel" = "取消";
+"error" = "错误";
+"loading" = "加载中...";
+"no_data" = "暂无数据";
+"pull_to_refresh" = "下拉刷新";
+
+// MARK: - Login page
+"login_title" = "欢迎回来";
+"login_subtitle" = "登录以解锁更多功能";
 "login_button" = "登录";
-"logout_button" = "退出";
-"home_title" = "首页";
-"search_title" = "搜索";
-"profile_title" = "我的";
-"error_occurred" = "发生错误";
-"retry" = "重试";
 "username_placeholder" = "用户名";
 "password_placeholder" = "密码";
-"welcome_back" = "欢迎回来";
-"login_to_unlock" = "登录以解锁更多功能";
-"skip_and_browsing" = "跳过，继续浏览";
+"skip_button" = "跳过，继续浏览";
+"face_id_login" = "使用 Face ID 登录";
+"touch_id_login" = "使用 Touch ID 登录";
+"biometry_authentication_reason" = "验证身份以登录";
+
+// MARK: - Logoff
+"logout_button" = "退出";
+"logout_confirm_title" = "确认退出";
+"logout_confirm_message" = "确定要退出登录吗？";
+"logout_success_title" = "已退出";
+"logout_success_message" = "您已成功退出登录";
+
+// MARK: - Main
+"home_title" = "热门仓库";
+"home_welcome_logged_in" = "欢迎回来，%@！";
+"home_welcome_logged_out" = "发现精彩开源项目";
+"home_login_prompt" = "🔐 点击登录，解锁更多功能";
+"home_empty_state" = "暂无数据\n下拉刷新重试";
+"home_network_error" = "网络请求失败，使用缓存数据";
+
+// MARK: - Search
+"search_title" = "搜索";
+"search_placeholder" = "搜索 GitHub 仓库";
+"search_empty_logged_out" = "🔐 登录后即可搜索 GitHub 仓库\n\n点击右上角登录";
+"search_empty_logged_in" = "🔍 输入关键词搜索开源项目\n\n例如: Swift, UIKit, Alamofire";
+"search_no_results" = "😔 未找到相关项目\n\n试试其他关键词吧";
+"search_failed" = "❌ 搜索失败: %@\n\n请检查网络连接";
+"search_login_required" = "请先登录后再使用搜索功能";
+
+// MARK: - Profile
+"profile_title" = "我的";
+"profile_logged_out" = "未登录";
+"profile_logged_out_subtitle" = "登录以体验完整功能";
+"profile_login_button" = "立即登录";
+"profile_logout_button" = "退出登录";
+"profile_version" = "版本: %@";
+"profile_email_suffix" = "%@example.com";
+
+// MARK: - Error
+"error_title" = "发生错误";
+"error_retry_button" = "重试";
+"error_unknown" = "未知错误";
+
+// MARK: - Authn Error
+"auth_error_invalid_credentials" = "用户名或密码错误";
+"auth_error_biometry_not_available" = "设备不支持生物识别";
+"auth_error_biometry_failed" = "生物识别验证失败";
+
+// MARK: - API Error
+"api_error_invalid_url" = "无效的 URL";
+"api_error_http" = "HTTP 错误: %d";
+"api_error_empty_data" = "服务器返回空数据";
+"api_error_decoding" = "数据解析错误: %@";
+
+// MARK: - Card
+"card_stars_format" = "⭐️ %d";
+"card_no_description" = "暂无描述";
+"card_author_prefix" = "@%@";
+"card_language_format" = "  %@  ";
+
+// MARK: - Notification
+"notification_login_state_changed" = "登录状态已变更";
+"notification_article_card_tapped" = "卡片被点击";
