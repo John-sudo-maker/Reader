@@ -59,4 +59,4 @@
 1. **克隆项目**
 ```bash
 git clone https://github.com/John-sudo-maker/Reader.git
-cd NewsReaderApp
+cd Reader
